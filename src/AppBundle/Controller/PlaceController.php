@@ -58,6 +58,10 @@ class PlaceController extends Controller
 
         if ($form->isValid()) {
             $em = $this->get('doctrine.orm.entity_manager');
+            foreach ($place->getPrices() as $price) {
+                $price->setPlace($place);
+                $em->persist($price);
+            }
             $em->persist($place);
             $em->flush();
             return $place;
