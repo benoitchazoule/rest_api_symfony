@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -10,7 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *      uniqueConstraints={@ORM\UniqueConstraint(name="users_email_unique",columns={"email"})}
  *   )
  */
-class User
+class User implements UserInterface
 {
     const MATCH_VALUE_THRESHOLD = 25;
     
@@ -35,6 +36,13 @@ class User
      * @ORM\Column(type="string")
      */
     protected $email;
+    
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $password;
+
+    protected $plainPassword;
     
     /**
      * @ORM\OneToMany(targetEntity="Preference", mappedBy="user")
@@ -91,6 +99,41 @@ class User
         $this->email = $email;
     }
     
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+    
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    public function getRoles()
+    {
+        return [];
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
     public function getPreferences()
     {
         return $this->preferences;
@@ -101,6 +144,12 @@ class User
         $this->preferences = $preferences;
     }
     
+    
+    public function eraseCredentials()
+    {
+        // Suppression des données sensibles
+        $this->plainPassword = null;
+    }
     
     public function preferencesMatch($themes)
     {

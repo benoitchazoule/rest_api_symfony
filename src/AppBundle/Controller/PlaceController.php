@@ -113,7 +113,7 @@ class PlaceController extends Controller
     
     private function placeNotFound()
     {
-        return \FOS\RestBundle\View\View::create(['message' => 'Place not found'], Response::HTTP_NOT_FOUND);
+        throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Place not found');
     }
     
     private function updatePlace(Request $request, $clearMissing)

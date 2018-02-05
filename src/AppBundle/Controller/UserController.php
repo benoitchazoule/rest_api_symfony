@@ -59,6 +59,11 @@ class UserController extends Controller
         $form->submit($request->request->all()); // Validation des données
 
         if ($form->isValid()) {
+            $encoder = $this->get('security.password_encoder');
+            // le mot de passe en clair est encodé avant la sauvegarde
+            $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
+            $user->setPassword($encoded);
+            
             $em = $this->get('doctrine.orm.entity_manager');
             $em->persist($user);
             $em->flush();
@@ -150,11 +155,24 @@ class UserController extends Controller
             return $this->userNotFound();
         }
 
-        $form = $this->createForm(UserType::class, $user);
+        if ($clearMissing) { // Si une mise à jour complète, le mot de passe doit être validé
+            $options = ['validation_groups'=>['Default', 'FullUpdate']];
+        } else {
+            $options = []; // Le groupe de validation par défaut de Symfony est Default
+        }
+
+        $form = $this->createForm(UserType::class, $user, $options);
 
         $form->submit($request->request->all(), $clearMissing);
 
         if ($form->isValid()) {
+            // Si l'utilisateur veut changer son mot de passe
+            if (!empty($user->getPlainPassword())) {
+                $encoder = $this->get('security.password_encoder');
+                $encoded = $encoder->encodePassword($user, $user->getPlainPassword());
+                $user->setPassword($encoded);
+            }
+            
             $em = $this->get('doctrine.orm.entity_manager');
             $em->persist($user);
             $em->flush();
@@ -167,6 +185,6 @@ class UserController extends Controller
     
     private function userNotFound()
     {
-        return \FOS\RestBundle\View\View::create(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('User not found');
     }
 }
