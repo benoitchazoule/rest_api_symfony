@@ -89,6 +89,10 @@ class Place
         return $this->prices;
     }
     
+    public function setPrices($prices){
+        $this->prices = $prices;
+    }
+    
     public function getThemes()
     {
         return $this->themes;
