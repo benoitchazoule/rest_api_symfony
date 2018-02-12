@@ -8,5 +8,21 @@ This API permit interact with places and users and list suggestions of places fo
 * use of FOSRestBundle
 * securisation with tokens
 * support of multiple Content-Type
-* managing of query strings on Place collection
+* management of query strings on Place collection
+* use of JMSSerialzerBundle
+* use of NelmioApiDocBundle
 
+## Configuration
+To use this API you must have this configuration:
+
+Technology  |Version 
+------------|:--------:
+PHP         |7.0.x 
+MySQL       |5.7.x
+Apache      |2.4.x
+
+You have to create a virtual host `rest-api.local` in order to access API with the url `http://rest-api.local`
+
+## Documentation
+The documentation is generated with NelmioApiDocBundle. It's not complete but accessible with the URL `http://rest-api.local/documentation`
+![Screenshot api doc](https://i.imgur.com/WO1EUOX.png)
