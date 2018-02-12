@@ -177,6 +177,15 @@ class UserController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Récupère la liste des lieux correspondants aux préférences de l'utilisateur",
+     *    output= { "class"=Place::class, "collection"=true, "groups"={"place"} },
+     *    statusCodes = {
+     *        200 = "Requete traitée avec succès",
+     *        404 = "Utilisateur non trouvé"
+     *    }
+     * )
+     *
      * @Rest\View(serializerGroups={"place"})
      * @Rest\Get("/users/{id}/suggestions")
      */
