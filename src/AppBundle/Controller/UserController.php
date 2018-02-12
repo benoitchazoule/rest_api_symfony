@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\Form\Type\UserType;
 use AppBundle\Entity\User;
@@ -12,6 +13,11 @@ use AppBundle\Entity\User;
 class UserController extends Controller
 {
     /**
+     * @ApiDoc(
+     *    description="Récupère la liste des utilisateurs de l'application",
+     *    output= { "class"=User::class, "collection"=true, "groups"={"user"} }
+     * )
+     *
      * @Rest\View(serializerGroups={"user"})
      * @Rest\Get("/users")
      */
@@ -28,14 +34,23 @@ class UserController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Récupère un utilisateur grace à son identifiant",
+     *    output= { "class"=User::class, "collection"=false, "groups"={"user"} },
+     *    statusCodes = {
+     *        200 = "Requete traitée avec succès",
+     *        404 = "Utilisateur non trouvé"
+     *    }
+     * )
+     *
      * @Rest\View(serializerGroups={"user"})
-     * @Rest\Get("/users/{user_id}")
+     * @Rest\Get("/users/{id}")
      */
     public function getUserAction(Request $request)
     {
         $user = $this->get('doctrine.orm.entity_manager')
                 ->getRepository('AppBundle:User')
-                ->find($request->get('user_id'));
+                ->find($request->get('id'));
         /* @var $user User */
 
         if (empty($user)) {
@@ -48,6 +63,19 @@ class UserController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Créé un utilisateur dans l'application",
+     *    input={"class"=UserType::class, "name"=""},
+     *    statusCodes = {
+     *        201 = "Création avec succès",
+     *        400 = "Formulaire invalide"
+     *    },
+     *    responseMap={
+     *         201 = {"class"=User::class, "groups"={"user"}},
+     *         400 = { "class"=UserType::class, "form_errors"=true, "name" = ""}
+     *    }
+     * )
+     *
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"user"})
      * @Rest\Post("/users")
      */
@@ -75,6 +103,14 @@ class UserController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Supprime un utilisateur",
+     *    statusCodes = {
+     *        204 = "Suppression effectuée avec succès",
+     *        404 = "Utilisateur non trouvé"
+     *    }
+     * )
+     *
      * @Rest\View(statusCode=Response::HTTP_NO_CONTENT, serializerGroups={"user"})
      * @Rest\Delete("/users/{id}")
      */
@@ -93,6 +129,20 @@ class UserController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Mise à jour totale d'un utilisateur",
+     *    input={"class"=UserType::class, "name"=""},
+     *    statusCodes = {
+     *        200 = "Mise à jour effectuée avec succès",
+     *        400 = "Formulaire invalide",
+     *        404 = "Utilisateur non trouvé"
+     *    },
+     *    responseMap={
+     *         200 = {"class"=User::class, "groups"={"user"}},
+     *         400 = { "class"=UserType::class, "form_errors"=true, "name" = ""}
+     *    }
+     * )
+     *
      * @Rest\View(serializerGroups={"user"})
      * @Rest\Put("/users/{id}")
      */
@@ -103,6 +153,20 @@ class UserController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Mise à jour partielle d'un utilisateur",
+     *    input={"class"=UserType::class, "name"=""},
+     *    statusCodes = {
+     *        200 = "Mise à jour effectuée avec succès",
+     *        400 = "Formulaire invalide",
+     *        404 = "Utilisateur non trouvé"
+     *    },
+     *    responseMap={
+     *         200 = {"class"=User::class, "groups"={"user"}},
+     *         400 = { "class"=UserType::class, "form_errors"=true, "name" = ""}
+     *    }
+     * )
+     *
      * @Rest\View(serializerGroups={"user"})
      * @Rest\Patch("/users/{id}")
      */

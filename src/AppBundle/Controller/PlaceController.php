@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Request\ParamFetcher;
@@ -14,6 +15,11 @@ use AppBundle\Entity\Place;
 class PlaceController extends Controller
 {
     /**
+     * @ApiDoc(
+     *    description="Récupère la liste des lieux de l'application",
+     *    output= { "class"=Place::class, "collection"=true, "groups"={"place"} }
+     * )
+     *
      * @Rest\View(serializerGroups={"place"})
      * @Rest\Get("/places")
      * @QueryParam(name="offset", requirements="\d+", default="", description="Index de début de la pagination")
@@ -49,6 +55,15 @@ class PlaceController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Récupère un lieu grace à son identifiant",
+     *    output= { "class"=Place::class, "collection"=false, "groups"={"place"} },
+     *    statusCodes = {
+     *        200 = "Requete traitée avec succès",
+     *        404 = "Lieu non trouvé"
+     *    }
+     * )
+     *
      * @Rest\View(serializerGroups={"place"})
      * @Rest\Get("/places/{id}")
      */
@@ -68,6 +83,19 @@ class PlaceController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Créé un lieu dans l'application",
+     *    input={"class"=PlaceType::class, "name"=""},
+     *    statusCodes = {
+     *        201 = "Création avec succès",
+     *        400 = "Formulaire invalide"
+     *    },
+     *    responseMap={
+     *         201 = {"class"=Place::class, "groups"={"place"}},
+     *         400 = { "class"=PlaceType::class, "form_errors"=true, "name" = ""}
+     *    }
+     * )
+     *
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"place"})
      * @Rest\Post("/places")
      */
@@ -94,6 +122,14 @@ class PlaceController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Supprime un lieu",
+     *    statusCodes = {
+     *        204 = "Suppression effectuée avec succès",
+     *        404 = "Lieu non trouvé"
+     *    }
+     * )
+     *
      * @Rest\View(statusCode=Response::HTTP_NO_CONTENT, serializerGroups={"place"})
      * @Rest\Delete("/places/{id}")
      */
@@ -118,6 +154,20 @@ class PlaceController extends Controller
     
     
     /**
+     * @ApiDoc(
+     *    description="Mise à jour totale d'un lieu",
+     *    input={"class"=PlaceType::class, "name"=""},
+     *    statusCodes = {
+     *        200 = "Mise à jour effectuée avec succès",
+     *        400 = "Formulaire invalide",
+     *        404 = "Lieu non trouvé"
+     *    },
+     *    responseMap={
+     *         200 = {"class"=Place::class, "groups"={"place"}},
+     *         400 = { "class"=PlaceType::class, "form_errors"=true, "name" = ""}
+     *    }
+     * )
+     *
      * @Rest\View(serializerGroups={"place"})
      * @Rest\Put("/places/{id}")
      */
@@ -128,6 +178,20 @@ class PlaceController extends Controller
 
     
     /**
+     * @ApiDoc(
+     *    description="Mise à jour partielle d'un lieu",
+     *    input={"class"=PlaceType::class, "name"=""},
+     *    statusCodes = {
+     *        200 = "Mise à jour effectuée avec succès",
+     *        400 = "Formulaire invalide",
+     *        404 = "Lieu non trouvé"
+     *    },
+     *    responseMap={
+     *         200 = {"class"=Place::class, "groups"={"place"}},
+     *         400 = { "class"=PlaceType::class, "form_errors"=true, "name" = ""}
+     *    }
+     * )
+     *
      * @Rest\View(serializerGroups={"place"})
      * @Rest\Patch("/places/{id}")
      */

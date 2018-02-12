@@ -13,6 +13,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Place
 {
     /**
+     * Identifiant unique du lieu
+     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
@@ -20,22 +22,30 @@ class Place
     protected $id;
 
     /**
+     * Nom du lieu
+     *
      * @ORM\Column(type="string")
      */
     protected $name;
 
     /**
+     * adresse du lieu
+     *
      * @ORM\Column(type="string")
      */
     protected $address;
     
     /**
+     * La liste des prix du lieu
+     *
      * @ORM\OneToMany(targetEntity="Price", mappedBy="place")
      * @var Price[]
      */
     protected $prices;
     
     /**
+     * La liste des thèmes du lieu
+     *
      * @ORM\OneToMany(targetEntity="Theme", mappedBy="place")
      * @var Theme[]
      */
